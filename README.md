@@ -27,9 +27,8 @@ sudo apt-get upgrade
 dtoverlay=pi3-miniuart-bt
 ```
 
-```
 运行脚本
-
+```
 sudo ./home_air_sensor.py  室内温度湿度检测
 ./weather_fetcher.py  		最近两天天气获取
 ./linux_temp.py  			pi的cpu+gpu温度检测
@@ -37,6 +36,8 @@ sudo ./home_air_sensor.py  室内温度湿度检测
 ./qqmail.py 	发送邮件
 node ./blessed_new/test/widget-temp.js   显示天气公告
 ```
+运行结果
+
 <img src="./1509204237526.jpg" alt="table">
 
 
