@@ -19,7 +19,7 @@ def fail_exit(msg):
 
 html = ''
 try:
-    r = requests.get('http://weather.sina.com.cn/', timeout=10)
+    r = requests.get('http://weather.sina.com.cn/shanghai', timeout=10)
     r.encoding = 'utf-8'
     html = r.text
 except Exception, e:
@@ -112,9 +112,9 @@ keys_require = '''city_name current_temp current_weather current_wind
     today_temp_low tomorrow_weather tomorrow_temp_low tomorrow_temp_hig
     tomorrow_wind'''.split()
 
-for key in keys_require:
-    if not result.get(key):
-        fail_exit('can not get key %s' % key)
+# for key in keys_require:
+#     if not result.get(key):
+#         fail_exit('can not get key %s' % key)
 
 result['update'] = int(time.time())
 with open(output_file, 'w') as out_file:

@@ -107,21 +107,21 @@ screen.text(weather_text_x + 64, weather_y + margin_top +
             weather_line2_height +
             weather_line_spacing, tmp0)
 
-try:
-    home_data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'home_air.json')
-    hdata = json.load(file(home_data_file, 'r'))
-    if int(time.time()) - hdata['update'] < 120:
-        tmp0 = u'{temp}℃ {humidity} %'.format(**hdata)
-        tmp0 = tmp0.replace('1', '1 ')
-        screen.text(weather_text_x + 64, weather_y + margin_top +
-                    weather_line1_height +
-                    weather_line_spacing +
-                    weather_line2_height +
-                    weather_line_spacing +
-                    weather_line3_height +
-                    weather_line_spacing, tmp0)
-except Exception, e:
-    pass
+# try:
+#     home_data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'home_air.json')
+#     hdata = json.load(file(home_data_file, 'r'))
+#     if int(time.time()) - hdata['update'] < 120:
+#         tmp0 = u'{temp}℃ {humidity} %'.format(**hdata)
+#         tmp0 = tmp0.replace('1', '1 ')
+#         screen.text(weather_text_x + 64, weather_y + margin_top +
+#                     weather_line1_height +
+#                     weather_line_spacing +
+#                     weather_line2_height +
+#                     weather_line_spacing +
+#                     weather_line3_height +
+#                     weather_line_spacing, tmp0)
+# except Exception, e:
+#     pass
 
 screen.text(weather_line5_x, weather_y + margin_top +
             weather_line1_height +
