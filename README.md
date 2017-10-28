@@ -37,5 +37,6 @@ sudo ./home_air_sensor.py  室内温度湿度检测
 ./qqmail.py 	发送邮件
 node ./blessed_new/test/widget-temp.js   显示天气公告
 ```
+<img src="./1509204237526.jpg" alt="table">
 
 
