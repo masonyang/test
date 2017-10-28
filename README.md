@@ -24,7 +24,7 @@ sudo apt-get upgrade
 ```
 编辑 /boot/config.txt 添加一行
 ```
-dtoverlay=pi3-miniuart-bt
+dtoverlay=w1-gpio-pullup,gpiopin=4
 ```
 
 运行脚本
