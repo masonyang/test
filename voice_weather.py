@@ -4,6 +4,7 @@
 import os
 import sys
 import json
+import datetime
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -32,7 +33,10 @@ except IOError:
 
 data = dict(hadata,**wdata)
 
-text='当前室内温度{temp}度，室内湿度{humidity}度.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}度,最低温度{tomorrow_temp_low}度'.format(**data)
+time_now = datetime.datetime.now()
+time_string = time_now.strftime('%H:%M')
+
+text= '现在'+time_string+'，当前室内温度{temp}度，室内湿度{humidity}度.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}度,最低温度{tomorrow_temp_low}度'.format(**data)
 
 url = u'http://tts.baidu.com/text2audio?idx=1&tex={0}&cuid=baidu_speech_' \
       u'demo&cod=2&lan=zh&ctp=1&pdt=1&spd=4&per=4&vol=5&pit=5'.format(text)

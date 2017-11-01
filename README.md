@@ -35,6 +35,9 @@ sudo ./home_air_sensor.py  室内温度湿度检测
 ./voice_weather.py   语音播报
 ./qqmail.py 	发送邮件
 node ./blessed_new/test/widget-temp.js   显示天气公告
+
+./rili.py
+./alarmclock.py
 ```
 运行结果
 
