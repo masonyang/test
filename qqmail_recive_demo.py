@@ -6,7 +6,6 @@ from email.header import decode_header
 from email.utils import parseaddr
 from datetime import datetime
 
-
 def get_email():
     server = poplib.POP3_SSL(pop_server,'995')
     # 可以打开或关闭调试信息:

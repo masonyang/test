@@ -7,6 +7,8 @@ from email.header import Header
 import os
 import json
 import sys
+import datetime
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -21,13 +23,13 @@ def SendEmail(fromAdd, toAdd, subject, attachfile, htmlText):
   msg['From'] = strFrom;
   
   smtp = smtplib.SMTP('smtp.qq.com');
-  smtp.login('','');
+
   try:
     smtp.sendmail(strFrom,strTo,msg.as_string());
   finally:
     smtp.close;
 
-def getInfo():
+def getInfo(toAdd):
   home_air_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'home_air.json')
 
   weather_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'weather.json')
@@ -52,10 +54,20 @@ def getInfo():
 
   data = dict(hadata,**wdata)
 
-  text='当前室内温度{temp}℃，室内湿度{humidity}%.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
+  if(toAdd == '530369682@qq.com'):
+    text='当前室内温度{temp}℃，室内湿度{humidity}%.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
+  else:  
+    text='明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
 
   return text
 
 if __name__ == "__main__":
-  text = getInfo();
-  SendEmail("","","","hello",text);
+
+  arr = {}
+  time_now = datetime.datetime.now()
+  date_string = time_now.strftime('%Y年%m月%d日')
+
+  for i in arr:
+    text = getInfo(arr[i]);
+    SendEmail();
+    time.sleep(5)

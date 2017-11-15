@@ -117,5 +117,6 @@ keys_require = '''city_name current_temp current_weather current_wind
 #         fail_exit('can not get key %s' % key)
 
 result['update'] = int(time.time())
+#print json.dumps(result)
 with open(output_file, 'w') as out_file:
     json.dump(result, out_file)

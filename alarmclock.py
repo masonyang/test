@@ -68,7 +68,7 @@ def isHoliday(date,holidaylist,day):
 	if(holidayResult.has_key(date)):
 		return True
 	else:
-		if((day==6) or (day==0)):
+		if((day==5) or (day==6)):
 			return True
 		else:
 			return False
