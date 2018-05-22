@@ -2,6 +2,7 @@
 # coding: utf-8
 #https://github.com/PP8818/Python-Projects
 #https://segmentfault.com/a/1190000009420701
+#12 14 * * * /bin/sh /Users/yangminsheng/masonInPython/epaper_clock/wechat_reply.sh
 #kill -s `ps -ef | grep "wechat_push.py"|awk '{print $2}'`
 # ps aux|grep -v grep|grep "wechat_push.py"
 import sys

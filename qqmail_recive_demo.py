@@ -5,6 +5,9 @@ from email.parser import Parser
 from email.header import decode_header
 from email.utils import parseaddr
 from datetime import datetime
+email = '530369682@qq.com'
+passwd = 'njksqixizpdycajf'
+pop_server = 'pop.qq.com'
 
 def get_email():
     server = poplib.POP3_SSL(pop_server,'995')

@@ -2,9 +2,16 @@
 
 python_dir="/usr/bin/python"
 
+run_dir="/Users/yangminsheng/masonInPython/epaper_clock"
 
 function wechat_push(){
-	`$python_dir "$run_dir/weather_fetcher.py"`
+	# `$python_dir "$run_dir/weather_sina_shanghai.py"`
+
+	# `$python_dir "$run_dir/weather_sina_wuhan.py"`
+
+	`$python_dir "$run_dir/weather_moji_shanghai.py"`
+
+	`$python_dir "$run_dir/weather_moji_wuhan.py"`
 
 	`$python_dir "$run_dir/wechat_push.py"`
 }

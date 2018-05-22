@@ -17,13 +17,14 @@ def SendEmail(fromAdd, toAdd, subject, attachfile, htmlText):
   strFrom = fromAdd;
   strTo = toAdd;
   msg =MIMEText(htmlText);
-  msg['Content-Type'] = 'Text/HTML';
-  msg['Subject'] = Header(subject,'gb2312');
+  msg['Subject'] = Header(subject,'utf-8');
   msg['To'] = strTo;
   msg['From'] = strFrom;
   
   smtp = smtplib.SMTP('smtp.qq.com');
-
+  smtp.login('530369682@qq.com','mzassxaojgyubjje');
+  # smtp = smtplib.SMTP('smtp.ym.163.com');2622989875@qq.com
+  # smtp.login('service@nmgnsr.com','xslkfb@2016');
   try:
     smtp.sendmail(strFrom,strTo,msg.as_string());
   finally:
@@ -54,20 +55,20 @@ def getInfo(toAdd):
 
   data = dict(hadata,**wdata)
 
-  if(toAdd == '530369682@qq.com'):
-    text='当前室内温度{temp}℃，室内湿度{humidity}%.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
-  else:  
-    text='明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
+  # if(toAdd == '530369682@qq.com'):
+  #   text='当前室内温度{temp}℃，室内湿度{humidity}%.明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
+  # else:  
+  text='明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**data)
 
   return text
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-  arr = {}
-  time_now = datetime.datetime.now()
-  date_string = time_now.strftime('%Y年%m月%d日')
+#   arr = {'guofang':'244241235@qq.com','jason':'313588655@qq.com','mason':'530369682@qq.com'}
+#   time_now = datetime.datetime.now()
+#   date_string = time_now.strftime('%Y年%m月%d日')
 
-  for i in arr:
-    text = getInfo(arr[i]);
-    SendEmail();
-    time.sleep(5)
+#   for i in arr:
+#     text = getInfo(arr[i]);
+#     SendEmail("530369682@qq.com",arr[i],date_string+"气温报告","hello",text+'---来自Mason');
+#     time.sleep(5)

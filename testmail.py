@@ -23,7 +23,7 @@ def SendEmail(fromAdd, toAdd, subject, attachfile, htmlText):
   msg['From'] = strFrom;
   
   smtp = smtplib.SMTP('smtp.qq.com');
-  smtp.login('','');
+  smtp.login('530369682@qq.com','njksqixizpdycajf');
   try:
     smtp.sendmail(strFrom,strTo,msg.as_string());
   finally:
@@ -31,8 +31,8 @@ def SendEmail(fromAdd, toAdd, subject, attachfile, htmlText):
 
 if __name__ == "__main__":
 
-  arr = {}
+  arr = {'mason':'530369682@qq.com','mason1':'530369682@qq.com','mason2':'530369682@qq.com'}
 
   for i in arr:
-    SendEmail("",arr[i],"aaa","hello",'');
+    SendEmail("530369682@qq.com",arr[i],"aaa","hello",'来自Mason');
     time.sleep(5)
