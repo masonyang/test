@@ -41,23 +41,23 @@ def tick():
 	rb = wxRot()
 	lists = rb.getFriends()
 
-	obj = infoparsing.textParsing('新功能',lists)
+	obj = infoparsing.textParsing('新功能',lists,'')
 	func_tip = "\n\n【可以通过回复'功能提示'来获取更多功能使用说明】"
 	# newTip = obj.done()
 	# msg+="\n("+rb.transMutiLangMsg(msg,'en')+" —— From Baidu)"
 
 	msg_common = rb.TipMsg() + rb.weatherInfo() + func_tip
 
-	msg_special = rb.TipMsg() + rb.weatherWuHanInfo() + func_tip
+	# msg_special = rb.TipMsg() + rb.weatherWuHanInfo() + func_tip
 
 	for i in range(len(lists)):
 		if(lists[i]['PYQuanPin'] == 'Qiqi'):
-			rb.sendNormalMsg(lists[i]['UserName'],msg_special)
+			rb.sendNormalMsg(lists[i]['UserName'],msg_common)
 		elif(lists[i]['PYQuanPin'] == 'tiande'):
 			rb.sendNormalMsg(lists[i]['UserName'],msg_common)
-		elif(lists[i]['PYQuanPin'] == 'Jason' and lists[i]['RemarkPYQuanPin']==''):
-			rb.sendNormalMsg(lists[i]['UserName'],msg_common)
 		elif(lists[i]['PYQuanPin'] == 'guofang'):
+			rb.sendNormalMsg(lists[i]['UserName'],msg_common)
+		elif(lists[i]['PYQuanPin'] == 'Cynthia'):
 			rb.sendNormalMsg(lists[i]['UserName'],msg_common)
 	pass
 
@@ -82,6 +82,8 @@ def tick():
 # rb.sendNormalMsg(lists[i]['UserName'],msg)
 # elif(lists[i]['PYQuanPin'] == 'tongyuwei'):
 # rb.sendNormalMsg(lists[i]['UserName'],msg)
+# elif(lists[i]['PYQuanPin'] == 'Jason' and lists[i]['RemarkPYQuanPin']==''):
+# rb.sendNormalMsg(lists[i]['UserName'],msg_common)
 
 class wxRot(object):
 	"""docstring for wxRot"""
@@ -147,6 +149,8 @@ class wxRot(object):
 				otherInfo = "新年快乐！"
 
 			return "("+otherInfo+" Mason给您拜年啦～ 祝 阖家幸福，事业有成，万事如意，岁岁平安，Happy New Year！) \n"
+		elif(nextTime == '2018.07.21' or nextTime == '2018.07.22'):
+			return "【安比台风:门窗管好，出门记得带伞】"
 		else:
 			return ""
 		pass
@@ -215,9 +219,76 @@ class wxRot(object):
 
 @itchat.msg_register(['Text','Map','Picture'])
 def text_reply(msg):
+
+	auto_reply_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'auto_reply.json')
+
 	friends=itchat.get_friends(update=True)
-	obj = infoparsing.textParsing(msg['Text'],friends)
-	return obj.done()
+
+	time_now = int(time.time())
+
+	if any(word in msg['Text'] for word in ["开启自动回复", "关闭自动回复"]):
+
+		for i in range(len(friends)):
+			if((friends[i]['PYQuanPin'] == 'MasonPioneerYoung') and (msg['User']['PYQuanPin'] == 'MasonPioneerYoung')):
+				if msg['Text'] == '开启自动回复':
+					result = {'auto_reply': 1,'last_modify':time_now}
+					with open(auto_reply_file, 'w') as out_file:
+						json.dump(result, out_file)
+					return '[已开启自动回复]'
+				else:
+					result = {'auto_reply': 0,'last_modify':time_now}
+					with open(auto_reply_file, 'w') as out_file:
+						json.dump(result, out_file)
+					return '[已关闭自动回复]'
+
+	try:
+		with open(auto_reply_file, 'r') as in_file:
+			auto_reply = json.load(in_file)
+	except IOError:
+		pass
+
+	obj = infoparsing.textParsing(msg['Text'],friends,msg['User']['PYQuanPin'])
+	res = obj.done()
+
+	if time_now - auto_reply['last_modify'] > 1800:
+		auto_reply['auto_reply'] = 1
+		result = {'auto_reply': 0,'last_modify':time_now}
+		with open(auto_reply_file, 'w') as out_file:
+			json.dump(result, out_file)
+
+	if auto_reply['auto_reply'] == 1 and res == '':
+		now = int(time.time())
+
+		time_now = datetime.datetime.now()
+		current_date = time_now.strftime('%Y-%m-%d')
+
+		work_st = current_date+' 09:00:00'
+		work_ts = int(time.mktime(time.strptime(work_st, "%Y-%m-%d %H:%M:%S")))
+
+		work_et = current_date+' 19:00:00'
+		work_te = int(time.mktime(time.strptime(work_et, "%Y-%m-%d %H:%M:%S")))
+
+		# fz_st = '2018-07-01 10:40:30'
+		# fz_ts = int(time.mktime(time.strptime(fz_st, "%Y-%m-%d %H:%M:%S")))
+
+		# fz_et = '2018-07-16 12:00:00'
+		# fz_te = int(time.mktime(time.strptime(fz_et, "%Y-%m-%d %H:%M:%S")))
+
+		# if((now>fz_ts)and(now<fz_te)):
+		# 	st = current_date+' 20:00:00'
+		# 	ts = int(time.mktime(time.strptime(st, "%Y-%m-%d %H:%M:%S")))
+
+		# 	et = current_date+' 23:59:59'
+		# 	te = int(time.mktime(time.strptime(et, "%Y-%m-%d %H:%M:%S")))
+
+		# 	if((now>ts)and(now<te)):
+		# 		return '在看世界杯,有事请留言'
+		if((now>work_ts)and(now<work_te)):
+			return ''
+		else:
+			return '现在有点忙,有事请留言'
+	else:
+		return res
 
 @itchat.msg_register(['Picture', 'Recording', 'Attachment', 'Video'])
 def download_files(msg):

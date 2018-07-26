@@ -9,27 +9,48 @@ import	platform
 import qqmail
 import datetime
 import direction
+import jplearn
+import toutiao
+import nmc_weather
+import linuxcommand
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 class textParsing(object):
 	"""docstring for textParsing"""
-	def __init__(self, arg, friends=''):
+	def __init__(self, arg, friends='',askerName=''):
 		self.keyWordList()
 		self.text=arg
 		self.friends=friends
+		self.queryType = ''
+		self.askerName = askerName
+		self.myself = 'MasonPioneerYoung'
 
-		self.result = self.notJiebaParsing(arg)
+		self.result = self.weatherQuery(arg)
 		if(self.result == ''):
-			self.result = self.masonServicesParsing(arg)
+			self.result = self.notJiebaParsing(arg)
 			if(self.result == ''):
-				self.result = self.normalParsing(arg)
+				self.result = self.masonServicesParsing(arg)
 				if(self.result == ''):
-					self.result = self.jbParsing(arg)
+					self.result = self.normalParsing(arg)
 					if(self.result == ''):
-						self.result = ''		
+						self.result = self.jbParsing(arg)
+						if(self.result == ''):
+							self.result = ''		
 		pass
+
+	def weatherQuery(self,text):
+		nmcObj = nmc_weather.nmcWeather()
+
+		result = nmcObj.has_cityinfo_by_cityname(text)
+
+		if result == 'not_weather':
+			self.queryType = ''
+			return ''
+		else:
+			self.queryType = 'nmcWeatherQuery'
+			return result
 
 	def normalParsing(self,text):
 		self.seg_list = text
@@ -38,11 +59,11 @@ class textParsing(object):
 		return ''
 
 	def keyWordList(self):
-		self.notJieba=['怎么走']
-		self.kw=['日语翻译','翻译','天气','日语','买','视频']
-		self.otherKw=['英语天气','好友','功能提示']
+		self.notJieba=['怎么走','日语初级文法','日语初级单词','日语初级场景','linux']
+		self.kw=['日文翻译','翻译','日文','买','视频','头条']
+		self.otherKw=['英语天气','好友','功能提示','查找充电桩']
 		self.masonServices=['开启','关闭','关电脑','关机','休眠','重启','发送']
-		self.mappings={'日语':'jpTranslate','日语翻译':'jpTranslate','翻译':'translate','天气':'weather','英语天气':'enWeather','买':'jdBuy','好友':'getFriends','视频':'videoSearch','功能提示':'newTip','怎么走':'useDirection'}
+		self.mappings={'日文':'jpTranslate','日文翻译':'jpTranslate','翻译':'translate','英语天气':'enWeather','买':'jdBuy','好友':'getFriends','视频':'videoSearch','功能提示':'newTip','怎么走':'useDirection','日语初级文法':'juniorJpGrammar','日语初级单词':'juniorJpWord','日语场景':'jpScene','头条':'touTiaoQuery','linux':'linux_command','查找充电桩':'findElecStation'}
 		self.masonServicesMappings={'开启':'masonComputerServices','关闭':'masonComputerServices','关电脑':'masonComputerServices','关机':'masonComputerServices','休眠':'masonComputerServices','重启':'masonComputerServices','发送':'masonComputerServices'}
 		pass
 
@@ -75,7 +96,7 @@ class textParsing(object):
 		return ''
 
 	def done(self):
-		if(self.result):
+		if(self.result and self.queryType == ''):
 			try:
 				method_name = self.mappings[self.result.encode("utf8")]
 			except Exception, e:
@@ -84,8 +105,21 @@ class textParsing(object):
 			method = getattr(self, method_name, lambda: "nothing")
 			#根据fromUserName的permission来决定是否执行
 			return method(self.result)
+		elif (self.result and self.queryType != ''):
+			
+			method_name = self.queryType
+
+			method = getattr(self, method_name, lambda: "nothing")
+			#根据fromUserName的permission来决定是否执行
+			return method(self.result)
 		else:
 			return ''
+
+	def nmcWeatherQuery(self,code):
+
+		nmcObj = nmc_weather.nmcWeather()
+
+		return nmcObj.get_weather_by_cityname(code,self.text)
 
 	def translate(self,prefix):
 		trans = translate.Translate()
@@ -110,10 +144,10 @@ class textParsing(object):
 				wdata = json.load(in_file)
 		except IOError:
 			pass
-		if(wdata['today_temp_hig']):
-			text='今天{today_weather},最高温度{today_temp_hig}℃,最低温度{today_temp_low}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
+		if(wdata['today_weather'] == '9999'):
+			text='当前气温{current_temp}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
 		else:
-			text='今天{today_weather},当前气温{current_temp}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
+			text='今天{today_weather},最高温度{today_temp_hig}℃,最低温度{today_temp_low}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
 
 		tomorrow_temp_hig=float(wdata['tomorrow_temp_hig'])
 
@@ -130,7 +164,7 @@ class textParsing(object):
 
 		text = text+"\n更多信息请登录http://m.nmc.cn/publish/forecast/ASH/shanghai.html\n"+otherInfo
 
-		text+="\n("+self.transMutiLangMsg(text,'en')+")"
+		# text+="\n("+self.transMutiLangMsg(text,'en')+")"
 
 		return text
 
@@ -154,10 +188,10 @@ class textParsing(object):
 				wdata = json.load(in_file)
 		except IOError:
 			pass
-		if(wdata['today_temp_hig']):
-			text='今天{today_weather},最高温度{today_temp_hig}℃,最低温度{today_temp_low}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
+		if(wdata['today_weather'] == '9999'):
+			text='当前气温{current_temp}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
 		else:
-			text='今天{today_weather},当前气温{current_temp}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
+			text='今天{today_weather},最高温度{today_temp_hig}℃,最低温度{today_temp_low}℃. 明天{tomorrow_weather},最高温度{tomorrow_temp_hig}℃,最低温度{tomorrow_temp_low}℃'.format(**wdata)
 
 		trans = translate.Translate()
 
@@ -183,6 +217,19 @@ class textParsing(object):
 			text = trans.jpTrans(sentence,f)
 
 			return text
+
+	def touTiaoQuery(self,prefix):
+		length = len(prefix)
+		s = self.text.decode('utf8')[length:].encode('utf8')
+
+		text = s.strip()
+
+		if(text == ''):
+			return ''
+		else:
+			tt = toutiao.touTiao()
+
+			return tt.query(text)
 
 	def getFriends(self,prefix):
 		output_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'friends.json')
@@ -249,12 +296,22 @@ class textParsing(object):
 	def newTip(self,prefix):
 
 		msg = "新功能:\n"
-		msg+="1.查看今明天气,输入:天气\n"
-		msg+="2.中译英、英译中,输入:翻译 我是谁/who am I\n"
-		msg+="3.买衣服、3c产品,输入:(想/打算/准备)买iphone\n"
-		msg+="4.搜索电视剧、电影,输入:视频 星球大战\n"
-		msg+="5.问路,输入:人民公园到淮海路怎么走\n"
+		# msg+="1.查看今明天气,输入:天气\n\n"
+		msg+="1.查看某个城市地区的天气,输入:***天气。\n 【其他城市地区: 省市+地区，如:湖北省武汉、黑龙江省齐齐哈尔】\n【上海地区支持: 崇明、嘉定、闵行、南汇、宝山、上海、奉贤、金山、松江、浦东、青浦】\n\n"
+		msg+="2.中译英、英译中,输入:翻译 我是谁/who am I \n【日文翻译使用: 日文翻译 我是谁】\n\n"
+		msg+="3.买衣服、3c产品,输入:(想/打算/准备)买iphone\n\n"
+		msg+="4.搜索电视剧、电影,输入:视频 星球大战\n\n"
+		msg+="5.问路,输入:人民公园到淮海路怎么走\n\n"
+		msg+="6.新能源车充电桩查询,输入:查找充电桩\n\n"
+		msg+="7.搜索查找新闻、视频、文章、资料信息,输入:头条 什么是区块链\n\n"
+		msg+="8.liunx命令速查,输入:linux ls\n\n"
+		if(self.askerName == self.myself):
+			msg+="通过输入:日语初级文法第N课.来学习\n\n"
+			msg+="通过输入:日语初级单词第N课.来学习\n\n"
 		return msg
+
+	def findElecStation(self,prefix):
+		return "请访问: https://www.powerlife.com.cn/pile/ops/map/default.html"
 
 	def videoSearch(self,prefix):
 		url = 'http://m.iqiyi.com/search.html?source=input&vfrm=2-3-0-1&'
@@ -265,9 +322,41 @@ class textParsing(object):
 
 		return url+urllib.urlencode({'key':sentence})
 
+	def juniorJpGrammar(self,prefix):
+		if(self.askerName == self.myself):
+			use_local = True
+		else:
+			use_local = False
+		learn = jplearn.JpLearn()
+		return learn.run(self.text,'','grammar',use_local)
+
+	def juniorJpWord(self,prefix):
+		if(self.askerName == self.myself):
+			use_local = True
+		else:
+			use_local = False
+		learn = jplearn.JpLearn()
+		return learn.run(self.text,'','word',use_local)
+
+	def jpScene(self,prefix):
+		if(self.askerName == self.myself):
+			use_local = True
+		else:
+			use_local = False
+		learn = jplearn.JpLearn()
+		return learn.run(self.text,'','scene',use_local)
+
 	def useDirection(self,prefix):
 		direct = direction.Direction()
 		return direct.run(self.text)
+
+	def linux_command(self,prefix):
+		if(self.askerName == self.myself):
+			use_local = True
+		else:
+			use_local = False
+		lc = linuxcommand.linuxCommand()
+		return lc.run(self.text,use_local)
 
 	def jdBuy(self,prefix):
 		url = 'https://so.m.jd.com/ware/search.action?'

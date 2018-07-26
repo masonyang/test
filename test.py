@@ -8,6 +8,20 @@ import direction
 import jieba  
 import networkx as nx  
 from sklearn.feature_extraction.text import TfidfVectorizer, TfidfTransformer 
+import jplearn
+import datetime
+import os
+import json
+import time
+import toutiao
+import linuxcommand
+# import socket
+
+#http://www.nmc.cn/f/rest/province
+
+#http://www.nmc.cn/f/rest/province/ASH
+
+#http://www.nmc.cn/f/rest/weather/58367
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -70,14 +84,93 @@ def get_abstract(content, size=3):
     size = min(size, len(docs))  
     indices = map(lambda x: x[0], tops)[:size]  
     return map(lambda idx: docs[idx], indices)  
-  
-  
+
+# myname = socket.getfqdn(socket.gethostname(  ))
+# #获取本机ip
+# myaddr = socket.gethostbyname(myname)
+# print myname
+# print myaddr
+
+learn = jplearn.JpLearn()
+
+title = ''
+l_type = ''
+
+if sys.argv[1] == 'g':#文法
+    title = '日语初级文法'
+    l_type = 'grammar'
+elif sys.argv[1] == 'w':#单词
+    title = '日语初级单词'
+    l_type = 'word'
+
+if title == '':
+    print('error')
+else:
+    lesson = learn.run('第'+sys.argv[2]+'课','\033[1;31m# \033[0m',l_type)
+
+    print('\033[1;31m################################### \033[0m')
+    print(lesson)
+    print('\033[1;31m################################### \033[0m')
+
+# lc = linuxcommand.linuxCommand()
+# print lc.run('linux rm')
+
+# text='龙珠'
+
+# tt = toutiao.touTiao()
+
+# result = tt.query(text)
+
+# arr=''
+
+# for data in result['data']:
+#     if data.has_key('title') and data.has_key('share_url'):
+#         if data.has_key('has_video'):
+#             if data['has_video'] == True:
+#                 continue
+#                 # tag = '[视频]'
+#             else:
+#                 tag = '[文章]'
+#         else:
+#             tag = ''
+
+#         arr = arr + tag + " " + data['title'] + ":" + data['share_url'] + "\n"
+    # elif data.has_key('has_video'):
+    #     print(data['has_video'])
+    # elif data.has_key('share_url'):
+    #     print(data['share_url'])
+# print(result)
+
+# text = '场景哈哈'
+# PATTERN = ur'((?:场景)?[\u4e00-\u9fa50-9]{1,10})'
+# data_utf8 = text.decode('utf8')
+
+# pattern = re.compile(PATTERN)
+
+# m = pattern.search(data_utf8)
+
+# scene = m.group(1).replace('场景','')
+
+# scenes = {
+#     '钢铁侠':'iron_man',
+#     '蜘蛛侠':'spider_man',
+# }
+
+# try:
+#     print(scenes[scene.encode('utf8')])
+# except Exception:
+#     print('--')
+# res = ''
+# for line in _file.xreadlines():
+#     print(line)
+#     res = res +line
+# print(123)
 # s = u'要说现在当红的90后男星，那就不得不提鹿晗、吴亦凡、杨洋、张艺兴、黄子韬、陈学冬、刘昊然，2016年他们带来不少人气爆棚的影视剧。这些90后男星不仅有颜值、有才华，还够努力，2017年他们又有哪些傲娇的作品呢？到底谁会成为2017霸屏男神，让我们拭目以待吧。鹿晗2016年参演《盗墓笔记》、《长城》、《摆渡人》等多部电影，2017年他将重心转到了电视剧。他和古力娜扎主演的古装奇幻电视剧《择天记》将在湖南卫视暑期档播出，这是鹿晗个人的首部电视剧，也是其第一次出演古装题材。该剧改编自猫腻的同名网络小说，讲述在人妖魔共存的架空世界里，陈长生(鹿晗饰演)为了逆天改命，带着一纸婚书来到神都，结识了一群志同道合的小伙伴，在国教学院打开一片新天地。吴亦凡在2017年有更多的作品推出。周星驰监制、徐克执导的春节档《西游伏魔篇》，吴亦凡扮演“有史以来最帅的”唐僧。师徒四人在取经的路上，由互相对抗到同心合力，成为无坚不摧的驱魔团队。吴亦凡还和梁朝伟、唐嫣合作动作片《欧洲攻略》，该片讲述江湖排名第一、第二的林先生(梁朝伟饰)和王小姐(唐嫣饰)亦敌亦友，二人与助手乐奇(吴亦凡饰)分别追踪盗走“上帝之手”地震飞弹的苏菲，不想却引出了欧洲黑帮、美国CIA、欧盟打击犯罪联盟特工们的全力搜捕的故事。吴亦凡2017年在电影方面有更大突破，他加盟好莱坞大片《极限特工3：终极回归》，与范·迪塞尔、甄子丹、妮娜·杜波夫等一众大明星搭档，为电影献唱主题曲《JUICE》。此外，他还参演吕克·贝松执导的科幻电影《星际特工：千星之城》，该片讲述一个发生在未来28世纪星际警察穿越时空的故事，影片有望2017年上映。'  
 
-s = u'北京时间4月5日，76人在客场以115-108击败活塞。乔尔-恩比德的缺阵并没有使76人止步不前，球队近期在本-西蒙斯的带领下高歌猛进，如今已经豪取12连胜。“自乔尔（恩比德）受伤后，更衣室里的每个人都站了出来，我们知道队里即便没有他，也是有能力赢下比赛的，”西蒙斯赛后说道，“我们叫他为季后赛的到来做好准备，而其他的一切则交由我们处理即可，如今我们正在证明我们可以做到这一点。”今日来到汽车城，费城的两位老将JJ-雷迪克和马科-贝里内利皆有不俗发挥，两人在此役合力砍下了44分。“他们（76人）拥有全联盟最好的两位无球射手——雷迪克和贝里内利，”活塞主帅斯坦-范甘迪赛后说道，“他们在今晚击溃了我们。”76人今天几乎整场压制活塞，三节过后已经领先对手有17分之多。然而底特律人并没有就此缴械投降，他们在比赛最后时刻掀起猛烈反扑，一度在距离比赛结束还有19.3秒时将分差缩小到只差6分。“你总是想要在关键时刻避免失误，但与此同时，你也必须得表扬活塞队在此间的出色表现，”76人主帅布雷特-布朗赛后说道，“这是我们背靠背的第二场比赛，而且我们在今晚正试图终结对手的季后赛希望。在这样的形势下，你必须得通过扼杀对手的斗志来击败他们，这可并非是件容易的事。他们在比赛最后时刻命中了一些关键三分，并迫使我们出现了一些失误。”在此役结束之后，活塞与东部第八雄鹿之间的差距被拉大到5场，由于常规赛目前只剩下最后4场比赛，这意味着活塞逆袭闯入季后赛的希望已经彻底破灭。“这很难受，因为闯入季后赛是我们在去年九月集结时所许下的目标，”活塞前锋雷吉-布洛克赛后说道，“但事情终究已经发生了，总会有些球员要离开。”下一场比赛，76人将在后天主场迎战骑士；而活塞将在同一天主场迎战独行侠。'
+# s = u'北京时间4月5日，76人在客场以115-108击败活塞。乔尔-恩比德的缺阵并没有使76人止步不前，球队近期在本-西蒙斯的带领下高歌猛进，如今已经豪取12连胜。“自乔尔（恩比德）受伤后，更衣室里的每个人都站了出来，我们知道队里即便没有他，也是有能力赢下比赛的，”西蒙斯赛后说道，“我们叫他为季后赛的到来做好准备，而其他的一切则交由我们处理即可，如今我们正在证明我们可以做到这一点。”今日来到汽车城，费城的两位老将JJ-雷迪克和马科-贝里内利皆有不俗发挥，两人在此役合力砍下了44分。“他们（76人）拥有全联盟最好的两位无球射手——雷迪克和贝里内利，”活塞主帅斯坦-范甘迪赛后说道，“他们在今晚击溃了我们。”76人今天几乎整场压制活塞，三节过后已经领先对手有17分之多。然而底特律人并没有就此缴械投降，他们在比赛最后时刻掀起猛烈反扑，一度在距离比赛结束还有19.3秒时将分差缩小到只差6分。“你总是想要在关键时刻避免失误，但与此同时，你也必须得表扬活塞队在此间的出色表现，”76人主帅布雷特-布朗赛后说道，“这是我们背靠背的第二场比赛，而且我们在今晚正试图终结对手的季后赛希望。在这样的形势下，你必须得通过扼杀对手的斗志来击败他们，这可并非是件容易的事。他们在比赛最后时刻命中了一些关键三分，并迫使我们出现了一些失误。”在此役结束之后，活塞与东部第八雄鹿之间的差距被拉大到5场，由于常规赛目前只剩下最后4场比赛，这意味着活塞逆袭闯入季后赛的希望已经彻底破灭。“这很难受，因为闯入季后赛是我们在去年九月集结时所许下的目标，”活塞前锋雷吉-布洛克赛后说道，“但事情终究已经发生了，总会有些球员要离开。”下一场比赛，76人将在后天主场迎战骑士；而活塞将在同一天主场迎战独行侠。'
 
-for i in get_abstract(s):  
-    print i
+# for i in get_abstract(s):  
+#     print i
 # if __name__=='__main__':
 	# if platform.system() == 'Darwin':
 	# 	# print('Mac')
