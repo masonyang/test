@@ -59,11 +59,11 @@ class textParsing(object):
 		return ''
 
 	def keyWordList(self):
-		self.notJieba=['怎么走','日语初级文法','日语初级单词','日语初级场景','linux']
+		self.notJieba=['怎么走','日语初级文法','日语初级单词','日语初级场景','日语手册','linux']
 		self.kw=['日文翻译','翻译','日文','买','视频','头条']
 		self.otherKw=['英语天气','好友','功能提示','查找充电桩']
 		self.masonServices=['开启','关闭','关电脑','关机','休眠','重启','发送']
-		self.mappings={'日文':'jpTranslate','日文翻译':'jpTranslate','翻译':'translate','英语天气':'enWeather','买':'jdBuy','好友':'getFriends','视频':'videoSearch','功能提示':'newTip','怎么走':'useDirection','日语初级文法':'juniorJpGrammar','日语初级单词':'juniorJpWord','日语场景':'jpScene','头条':'touTiaoQuery','linux':'linux_command','查找充电桩':'findElecStation'}
+		self.mappings={'日文':'jpTranslate','日文翻译':'jpTranslate','翻译':'translate','英语天气':'enWeather','买':'jdBuy','好友':'getFriends','视频':'videoSearch','功能提示':'newTip','怎么走':'useDirection','日语初级文法':'juniorJpGrammar','日语初级单词':'juniorJpWord','日语场景':'jpScene','日语手册':'jpManual','头条':'touTiaoQuery','linux':'linux_command','查找充电桩':'findElecStation'}
 		self.masonServicesMappings={'开启':'masonComputerServices','关闭':'masonComputerServices','关电脑':'masonComputerServices','关机':'masonComputerServices','休眠':'masonComputerServices','重启':'masonComputerServices','发送':'masonComputerServices'}
 		pass
 
@@ -307,7 +307,9 @@ class textParsing(object):
 		msg+="8.liunx命令速查,输入:linux ls\n\n"
 		if(self.askerName == self.myself):
 			msg+="通过输入:日语初级文法第N课.来学习\n\n"
+			msg+="通过输入:日语初级场景第N课.来学习\n\n"
 			msg+="通过输入:日语初级单词第N课.来学习\n\n"
+			msg+="通过输入:日语手册片假名.来学习\n\n"
 		return msg
 
 	def findElecStation(self,prefix):
@@ -345,6 +347,14 @@ class textParsing(object):
 			use_local = False
 		learn = jplearn.JpLearn()
 		return learn.run(self.text,'','scene',use_local)
+
+	def jpManual(self,prefix):
+		if(self.askerName == self.myself):
+			use_local = True
+		else:
+			use_local = False
+		learn = jplearn.JpLearn()
+		return learn.run(self.text,'','manual',use_local)
 
 	def useDirection(self,prefix):
 		direct = direction.Direction()

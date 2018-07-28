@@ -74,6 +74,9 @@ class JpLearn(object):
 		    '蜘蛛侠':'spider_man',
 		}
 
+		self.manual = {
+			'片假名':'2821057061',
+		}
 		pass
 
 	def run(self,text,prefix='',l_type='',use_local=False):
@@ -94,6 +97,12 @@ class JpLearn(object):
 			lesson = self.fenxiSceneText(text)
 			try:
 				filename = self.mappings[lesson.encode('utf8')]
+			except Exception:
+				return ''
+		elif l_type == 'manual':
+			lesson = self.fenxiManualText(text)
+			try:
+				filename = self.manual[lesson.encode('utf8')]
 			except Exception:
 				return ''
 		use_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/jp_'+l_type+'/'+filename+'.txt')
@@ -133,6 +142,18 @@ class JpLearn(object):
 		m = pattern.search(data_utf8)
 
 		return m.group(1).replace('日语场景','')
+
+	def fenxiManualText(self,text):
+		# PATTERN = ur'(日语初级){0,4}?[\u4e00-\u9fa5]{1,10}'
+		# data = '日语初级第N课'
+		PATTERN = ur'((?:日语手册)?[\u4e00-\u9fa50-9]{1,10})'
+		data_utf8 = text.decode('utf8')
+
+		pattern = re.compile(PATTERN)
+
+		m = pattern.search(data_utf8)
+
+		return m.group(1).replace('日语手册','').strip()
 
 	def fenxiGrammarText(self,text):
 		# PATTERN = ur'(日语初级){0,4}?[\u4e00-\u9fa5]{1,10}'
