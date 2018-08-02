@@ -59,22 +59,22 @@ class Direction(object):
 	        return ''
 
 	def fenxiText(self,text):
-	    PATTERN = ur'([\u4e00-\u9fa5]{1,10}?(?:到))([\u4e00-\u9fa5]{1,10}?(?:怎么走)){0,3}'
+		PATTERN = ur'([a-zA-Z0-9_\u4e00-\u9fa5]{1,10}?(?:到))([a-zA-Z0-9_\u4e00-\u9fa5]{1,10}?(?:怎么走)){0,3}'
 
-	    # data = '新疆维吾尔到伊犁州怎么走'
+		# data = '新疆维吾尔到伊犁州怎么走'
 
-	    data_utf8 = text.decode('utf8')
+		data_utf8 = text.decode('utf8')
 
-	    pattern = re.compile(PATTERN)
+		pattern = re.compile(PATTERN)
 
-	    m = pattern.search(data_utf8)
+		m = pattern.search(data_utf8)
 
-	    if m.lastindex >= 1:
-	        origin = m.group(1).replace('到','')
-	    if m.lastindex >= 2:
-	        distine = m.group(2).replace('怎么走','')
+		if m.lastindex >= 1:
+			origin = m.group(1).replace('到','')
+		if m.lastindex >= 2:
+			distine = m.group(2).replace('怎么走','')
 
-	    return origin,distine
+		return origin,distine
 
 	def request(self,url, params):
 	    params = urlencode(params)
